@@ -34,6 +34,7 @@ speaker cards, broken links, image alt text (accessibility), meta description (S
 | Smoke | `@smoke` | Every push + daily | Is the page up and can visitors open the registration form? |
 | Regression | `@regression` | Every push + daily | Every feature still works |
 | Known bugs | `@known-bug` | On demand | Proves an open bug still exists; passes once it's fixed |
+| Blocked | `@blocked` | Not run | Tests that can't run because another bug is in the way |
 
 ## 5. Environment
 - Browser: Chrome (latest), headless in CI.
@@ -42,27 +43,33 @@ speaker cards, broken links, image alt text (accessibility), meta description (S
 
 ## 6. Test cases
 
+Results as of the retest on 12 Oct 2026, after the page was redesigned for the 15 Oct edition.
+
 | ID | User story | Test case | Type | Result |
 |---|---|---|---|---|
 | TC-01 | US-01 Visit | Page loads with the right title and heading | Smoke | ✅ Pass |
-| TC-02 | US-02 Register | "Reserve Seat" opens the form with the cursor in Full Name | Smoke | ✅ Pass |
-| TC-03 | US-01 Visit | All 6 top-menu links exist and jump to a real section | Regression | ✅ Pass |
-| TC-04 | US-02 Register | Form closes with the × button | Regression | ✅ Pass |
-| TC-05 | US-02 Register | Form closes with the Escape key | Regression | ✅ Pass |
-| TC-06 | US-02 Register | Missing name is blocked; nothing is sent | Regression | ✅ Pass |
-| TC-07 | US-02 Register | Missing email is blocked; nothing is sent | Regression | ✅ Pass |
-| TC-08 | US-02 Register | Invalid email is blocked; nothing is sent | Regression | ✅ Pass |
-| TC-09 | US-02 Register | "I identify as" dropdown lists all 7 options | Regression | ✅ Pass |
-| TC-10 | US-03 Answers | FAQ answer opens and closes | Regression | ✅ Pass |
-| TC-11 | US-04 Mobile | Mobile menu opens and closes on a phone-sized screen | Regression | ✅ Pass |
-| TC-12 | US-01 Visit | Every speaker photo is labelled with the speaker's name | Regression | ✅ Pass |
-| TC-13 | Quality | No internal link is broken | Known bug | ❌ BUG-001 |
-| TC-14 | Content | Countdown doesn't say LIVE after the event | Known bug | ❌ BUG-002 |
-| TC-15 | Content | Session length is the same everywhere | Known bug | ❌ BUG-003 |
-| TC-16 | Accessibility | Every image has alt text | Known bug | ❌ BUG-004 |
-| TC-17 | SEO | Meta description is a real summary (50+ characters) | Known bug | ❌ BUG-005 |
-| TC-18 | US-01 Visit | Every speaker card links to LinkedIn | Known bug | ❌ BUG-007 |
-| TC-19 | Content | URLs are spelled correctly | Manual | ❌ BUG-006 |
+| TC-02 | US-01 Visit | All 6 top-menu links exist and jump to a real section | Smoke | ✅ Pass |
+| TC-03 | US-03 Answers | FAQ answer opens and closes | Regression | ✅ Pass |
+| TC-04 | US-04 Mobile | Mobile menu opens and closes on a phone-sized screen | Regression | ✅ Pass |
+| TC-05 | US-01 Visit | Every speaker card shows a name | Regression | ✅ Pass |
+| TC-06 | US-01 Visit | Every speaker card links to LinkedIn | Regression | ✅ Pass (was BUG-007) |
+| TC-07 | SEO | Meta description is a real summary (50+ characters) | Regression | ✅ Pass (was BUG-005) |
+| TC-08 | US-02 Register | A visible button opens the registration form | Known bug | ❌ BUG-008 |
+| TC-09 | US-02 Register | Form opens with the cursor in Full Name | Blocked | ⏸ BUG-008 |
+| TC-10 | US-02 Register | Form closes with the × button | Blocked | ⏸ BUG-008 |
+| TC-11 | US-02 Register | Form closes with the Escape key | Blocked | ⏸ BUG-008 |
+| TC-12 | US-02 Register | Missing name is blocked; nothing is sent | Blocked | ⏸ BUG-008 |
+| TC-13 | US-02 Register | Missing email is blocked; nothing is sent | Blocked | ⏸ BUG-008 |
+| TC-14 | US-02 Register | Invalid email is blocked; nothing is sent | Blocked | ⏸ BUG-008 |
+| TC-15 | US-02 Register | "I identify as" dropdown lists all 7 options | Blocked | ⏸ BUG-008 |
+| TC-16 | Quality | No internal link is broken | Known bug | ❌ BUG-001 |
+| TC-17 | Content | Countdown doesn't say LIVE after the event | Known bug | ⏳ BUG-002, retest after 15 Oct |
+| TC-18 | Content | FAQ shows the current event date and length | Known bug | ❌ BUG-003 |
+| TC-19 | Accessibility | Every image has alt text | Known bug | ❌ BUG-004 |
+| TC-20 | Content | URLs are spelled correctly | Manual | ❌ BUG-006 |
+
+TC-09 to TC-15 all passed on 10 Oct, before the redesign. They're marked **blocked** because the form can't be
+opened until BUG-008 is fixed.
 
 ### User stories
 - **US-01** As a visitor, I want the page to load and show clear event information so I can decide whether to attend.

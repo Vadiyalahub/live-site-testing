@@ -4,6 +4,7 @@ import com.qaautomation.config.ConfigReader;
 import com.qaautomation.pages.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,12 +17,12 @@ public class WitLandingPage extends BasePage {
 
     private final By heroTitle = By.tagName("h1");
     private final By navLinks = By.cssSelector("nav.topnav a");
-    private final By reserveSeatButton = By.cssSelector("a.wit-register");
+    private final By reserveSeatButton = By.cssSelector(".wit-register, [data-register]");
     private final By faqItems = By.cssSelector("#faq details");
     private final By faqQuestion = By.tagName("summary");
     private final By countdownMinutes = By.cssSelector("#cd [data-k='m']");
     private final By speakerCards = By.cssSelector("#speakers article.speaker");
-    private final By speakerPhoto = By.tagName("img");
+    private final By speakerName = By.tagName("h4");
     private final By speakerLinkedIn = By.cssSelector("a.li");
     private final By hamburgerButton = By.id("hamburger");
     private final By mobileMenu = By.id("mobileNav");
@@ -100,9 +101,32 @@ public class WitLandingPage extends BasePage {
         return driver.findElements(speakerCards);
     }
 
-    public String getSpeakerPhotoAlt(WebElement card) {
-        String alt = card.findElement(speakerPhoto).getDomAttribute("alt");
-        return alt == null ? "" : alt.trim();
+    public String getSpeakerName(WebElement card) {
+        List<WebElement> name = card.findElements(speakerName);
+        return name.isEmpty() ? "" : name.get(0).getDomProperty("textContent").trim();
+    }
+
+    /** True if any "Reserve Seat" / register button can be seen somewhere on the page. */
+    public boolean hasVisibleRegisterButton() {
+        for (WebElement button : driver.findElements(reserveSeatButton)) {
+            // Buttons can sit in sections that only fade in once scrolled to.
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center', behavior: 'instant'});", button);
+            try {
+                wait.until(ExpectedConditions.visibilityOf(button));
+                return true;
+            } catch (TimeoutException e) {
+                // Hidden button - try the next one.
+            }
+        }
+        return false;
+    }
+
+    /** Text of every FAQ answer, including the collapsed ones. */
+    public String getFaqText() {
+        return driver.findElements(faqItems).stream()
+                .map(item -> item.getDomProperty("textContent"))
+                .reduce("", (a, b) -> a + "\n" + b);
     }
 
     public String getSpeakerLinkedInUrl(WebElement card) {
@@ -122,11 +146,6 @@ public class WitLandingPage extends BasePage {
 
     public boolean isMobileMenuOpen() {
         return !Boolean.parseBoolean(driver.findElement(mobileMenu).getDomProperty("hidden"));
-    }
-
-    /** All text on the page, including sections that are still faded out. */
-    public String getPageText() {
-        return (String) ((JavascriptExecutor) driver).executeScript("return document.body.innerText;");
     }
 
     public List<String> getImagesWithoutAltText() {

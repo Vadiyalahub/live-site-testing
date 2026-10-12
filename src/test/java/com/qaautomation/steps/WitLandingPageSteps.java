@@ -75,13 +75,13 @@ public class WitLandingPageSteps {
         assertTrue(missing.isEmpty(), "Nav links with no matching section: " + missing);
     }
 
-    @Then("every speaker card should have a photo labelled with the speaker's name")
-    public void everySpeakerCardShouldHaveANamedPhoto() {
+    @Then("every speaker card should show the speaker's name")
+    public void everySpeakerCardShouldShowTheName() {
         WitLandingPage page = page();
         List<WebElement> cards = page.getSpeakerCards();
         assertFalse(cards.isEmpty(), "No speaker cards found");
         for (WebElement card : cards) {
-            assertFalse(page.getSpeakerPhotoAlt(card).isEmpty(), "A speaker photo has no alt text (speaker name)");
+            assertFalse(page.getSpeakerName(card).isEmpty(), "A speaker card has no name");
         }
     }
 
@@ -91,10 +91,16 @@ public class WitLandingPageSteps {
         List<String> missing = new ArrayList<>();
         for (WebElement card : page.getSpeakerCards()) {
             if (!page.getSpeakerLinkedInUrl(card).contains("linkedin.com")) {
-                missing.add(page.getSpeakerPhotoAlt(card));
+                missing.add(page.getSpeakerName(card));
             }
         }
         assertTrue(missing.isEmpty(), "Speakers with no LinkedIn link: " + missing);
+    }
+
+    @Then("there should be a visible button to register")
+    public void thereShouldBeAVisibleButtonToRegister() {
+        assertTrue(page().hasVisibleRegisterButton(),
+                "No visible Reserve Seat / register button - visitors can't open the registration form");
     }
 
     // ---------- Registration form ----------
@@ -216,10 +222,10 @@ public class WitLandingPageSteps {
                 "Countdown still shows '" + text + "' although the event was on " + eventDate);
     }
 
-    @Then("the page text should not contain {string}")
-    public void thePageTextShouldNotContain(String text) {
-        assertFalse(page().getPageText().toLowerCase().contains(text.toLowerCase()),
-                "Page text contains '" + text + "'");
+    @Then("the FAQ should not mention {string}")
+    public void theFaqShouldNotMention(String text) {
+        assertFalse(page().getFaqText().toLowerCase().contains(text.toLowerCase()),
+                "FAQ still says '" + text + "'");
     }
 
     @Then("every image should have alt text")

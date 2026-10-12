@@ -18,9 +18,9 @@ run_ui() {
 
 case "$SUITE" in
   smoke)      run_ui "@smoke" ;;
-  regression) run_ui "(@smoke or @regression) and not @known-bug" ;;
+  regression) run_ui "(@smoke or @regression) and not @known-bug and not @blocked" ;;
   known-bugs) run_ui "@known-bug" ;;
-  all)        run_ui "not @known-bug" ;;
+  all)        run_ui "not @known-bug and not @blocked" ;;
   *)
     echo "Unknown suite: $SUITE"
     echo "Usage: ./run-tests.sh [smoke|regression|known-bugs|all] [--headed]"
