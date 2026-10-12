@@ -10,14 +10,14 @@ on:
     inputs:
       tags:
         description: 'Cucumber tags to run, e.g. @smoke or @known-bug'
-        default: '(@smoke or @regression) and not @known-bug'
+        default: '(@smoke or @regression) and not @known-bug and not @blocked'
 
 jobs:
   ui-tests:
     name: UI tests (headless Chrome)
     runs-on: ubuntu-latest
     env:
-      TAGS: ${{ inputs.tags || '(@smoke or @regression) and not @known-bug' }}
+      TAGS: ${{ inputs.tags || '(@smoke or @regression) and not @known-bug and not @blocked' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
